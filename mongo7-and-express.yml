@@ -1,0 +1,36 @@
+version: '3.1'
+
+services:
+
+  djmongodb:
+    image: mongodb/mongodb-community-server:7.0.9-ubuntu2204
+    container_name: djmongodb
+    hostname: djmongodb
+    networks: 
+      - djmongonet
+    restart: always
+    environment:
+      MONGODB_INITDB_ROOT_USERNAME: admin
+      MONGODB_INITDB_ROOT_PASSWORD: GoatHead
+    volumes:
+      - /home/pschneider/djmongodb/data:/data/db:rw
+
+  djmongo-express:
+    image: mongo-express:1.0.2-18
+    container_name: djmongo-express
+    hostname: djmongo-express
+    networks: 
+      - djmongonet
+    restart: always
+    ports:
+      - 8081:8081
+    environment:
+      ME_CONFIG_BASICAUTH_USERNAME: admin
+      ME_CONFIG_BASICAUTH_PASSWORD: GoatHead
+      ME_CONFIG_MONGODB_ADMINUSERNAME: admin
+      ME_CONFIG_MONGODB_ADMINPASSWORD: GoatHead
+      ME_CONFIG_MONGODB_URL: mongodb://admin:GoatHead@djmongodb:27017/?authSource=admin
+
+networks:
+  djmongonet:
+    external: true

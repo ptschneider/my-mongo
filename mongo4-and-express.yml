@@ -1,0 +1,37 @@
+# mongo v5+ requires special CPU support, which I don't have apparently
+version: '3.1'
+
+services:
+
+  djmongodb:
+    image: mongo:4.4.26
+    container_name: djmongodb
+    hostname: djmongodb
+    networks: 
+      - djmongonet
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: GoatHead
+    volumes:
+      - /home/pschneider/djmongodb/data:/data/db:rw
+
+  djmongo-express:
+    image: mongo-express:1.0.2-18
+    container_name: djmongo-express
+    hostname: djmongo-express
+    networks: 
+      - djmongonet
+    restart: always
+    ports:
+      - 8081:8081
+    environment:
+      ME_CONFIG_BASICAUTH_USERNAME: admin
+      ME_CONFIG_BASICAUTH_PASSWORD: GoatHead
+      ME_CONFIG_MONGODB_ADMINUSERNAME: admin
+      ME_CONFIG_MONGODB_ADMINPASSWORD: GoatHead
+      ME_CONFIG_MONGODB_URL: mongodb://admin:GoatHead@djmongodb:27017/
+
+networks:
+  djmongonet:
+    external: true
